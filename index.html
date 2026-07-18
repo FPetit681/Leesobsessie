@@ -180,14 +180,14 @@
     padding-right: 6px;
   }
   .card-cover{
-    width: 76px;
-    height: 112px;
+    width: 228px;
+    height: 336px;
     flex-shrink: 0;
     margin-top: 14px;
-    border-radius: 2px;
+    border-radius: 3px;
     overflow: hidden;
     background: var(--paper-alt);
-    box-shadow: 0 6px 14px rgba(0,0,0,0.28), 0 0 0 1px rgba(42,34,22,0.08);
+    box-shadow: 0 10px 24px rgba(0,0,0,0.3), 0 0 0 1px rgba(42,34,22,0.08);
     transform: rotate(2deg);
     display:flex;
     align-items:center;
@@ -198,7 +198,7 @@
     font-family: 'Fraunces', serif;
     font-style: italic;
     font-weight: 600;
-    font-size: 1.8rem;
+    font-size: 4.5rem;
     color: var(--ink-soft);
   }
 
@@ -364,20 +364,20 @@
 
   .book-row{
     display:grid;
-    grid-template-columns: 34px 96px 1fr auto;
+    grid-template-columns: 102px 96px 1fr auto;
     gap: 4px 18px;
     align-items: center;
-    padding: 9px 4px;
+    padding: 14px 4px;
     border-bottom: 1px solid rgba(236,227,205,0.1);
   }
   .book-row:hover{ background: rgba(244,237,221,0.045); }
   .book-cover{
-    width: 34px;
-    height: 50px;
-    border-radius: 2px;
+    width: 102px;
+    height: 150px;
+    border-radius: 3px;
     overflow: hidden;
     background: var(--paper-alt);
-    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.32);
     display:flex;
     align-items: center;
     justify-content: center;
@@ -393,7 +393,7 @@
     font-family: 'Fraunces', serif;
     font-style: italic;
     font-weight: 600;
-    font-size: 1rem;
+    font-size: 2.4rem;
     color: var(--ink-soft);
   }
   .book-date{
@@ -415,11 +415,11 @@
     white-space: nowrap;
   }
   @media (max-width: 560px){
-    .book-row{ grid-template-columns: 34px 1fr; grid-template-areas: "cover title" "cover date" "cover author"; gap: 2px 14px; padding: 12px 4px; }
-    .book-cover{ grid-area: cover; width: 40px; height: 58px; align-self: start; }
+    .book-row{ grid-template-columns: 120px 1fr; grid-template-areas: "cover title" "cover date" "cover author"; gap: 4px 14px; padding: 14px 4px; }
+    .book-cover{ grid-area: cover; width: 120px; height: 174px; align-self: start; }
     .book-title{ grid-area: title; }
     .book-date{ grid-area: date; }
-    .book-author{ grid-area: author; text-align: left; }
+    .book-author{ grid-area: author; text-align: left; white-space: normal; }
   }
 
   .empty-state{
