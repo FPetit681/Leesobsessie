@@ -225,6 +225,34 @@
   .chip-host{ background: var(--purple-soft); color: var(--purple-deep); }
   .chip-status{ background: var(--yellow-soft); color: var(--yellow-deep); }
 
+  .upcoming{
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px 12px;
+    margin-top: 22px;
+    padding: 0 4px;
+  }
+  .upcoming-label{
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: var(--text-dim);
+  }
+  .upcoming-item{
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 8px 16px;
+    border-radius: 999px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--text);
+    box-shadow: 0 4px 12px rgba(36,31,61,0.05);
+  }
+
   /* ---------- Intro ---------- */
   section.intro{
     padding: 8px 0 52px;
@@ -426,7 +454,7 @@
       <ul class="card-chips">
         <li class="chip-date">
           <span class="chip-label">📅 Bespreking op</span>
-          <span class="chip-value">woensdag 23 september</span>
+          <span class="chip-value">woensdag 23 september, 20.00 uur</span>
         </li>
         <li class="chip-countdown" id="countdown-chip" data-meeting="2026-09-23">
           <span class="chip-label">⏳ Aftellen</span>
@@ -446,6 +474,12 @@
         </li>
       </ul>
     </article>
+
+    <div class="upcoming">
+      <span class="upcoming-label">Volgende bijeenkomsten:</span>
+      <span class="upcoming-item">📅 Donderdag 5 november, 19.30 uur</span>
+      <span class="upcoming-item">📅 Maandag 14 december, 19.30 uur</span>
+    </div>
   </div>
 </section>
 
