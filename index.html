@@ -172,36 +172,6 @@
     padding-left: 26px;
   }
 
-  .card-heading{
-    display:flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 20px;
-    padding-right: 6px;
-  }
-  .card-cover{
-    width: 228px;
-    height: 336px;
-    flex-shrink: 0;
-    margin-top: 14px;
-    border-radius: 3px;
-    overflow: hidden;
-    background: var(--paper-alt);
-    box-shadow: 0 10px 24px rgba(0,0,0,0.3), 0 0 0 1px rgba(42,34,22,0.08);
-    transform: rotate(2deg);
-    display:flex;
-    align-items:center;
-    justify-content:center;
-  }
-  .card-cover img{ width:100%; height:100%; object-fit: cover; display:block; }
-  .card-cover.cover-empty{
-    font-family: 'Fraunces', serif;
-    font-style: italic;
-    font-weight: 600;
-    font-size: 4.5rem;
-    color: var(--ink-soft);
-  }
-
   .card-fields{
     padding-left: 26px;
     display: grid;
@@ -364,38 +334,13 @@
 
   .book-row{
     display:grid;
-    grid-template-columns: 102px 96px 1fr auto;
+    grid-template-columns: 96px 1fr auto;
     gap: 4px 18px;
-    align-items: center;
-    padding: 14px 4px;
+    align-items: baseline;
+    padding: 11px 4px;
     border-bottom: 1px solid rgba(31,45,61,0.12);
   }
   .book-row:hover{ background: rgba(31,45,61,0.035); }
-  .book-cover{
-    width: 102px;
-    height: 150px;
-    border-radius: 3px;
-    overflow: hidden;
-    background: var(--paper-alt);
-    box-shadow: 0 4px 10px rgba(0,0,0,0.32);
-    display:flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-  }
-  .book-cover img{
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-  }
-  .book-cover.cover-empty{
-    font-family: 'Fraunces', serif;
-    font-style: italic;
-    font-weight: 600;
-    font-size: 2.4rem;
-    color: var(--ink-soft);
-  }
   .book-date{
     font-family: 'IBM Plex Mono', monospace;
     font-size: 0.78rem;
@@ -415,11 +360,9 @@
     white-space: nowrap;
   }
   @media (max-width: 560px){
-    .book-row{ grid-template-columns: 120px 1fr; grid-template-areas: "cover title" "cover date" "cover author"; gap: 4px 14px; padding: 14px 4px; }
-    .book-cover{ grid-area: cover; width: 120px; height: 174px; align-self: start; }
-    .book-title{ grid-area: title; }
-    .book-date{ grid-area: date; }
-    .book-author{ grid-area: author; text-align: left; white-space: normal; }
+    .book-row{ grid-template-columns: 1fr; gap: 2px; padding: 12px 4px; }
+    .book-author{ text-align: left; }
+    .book-date{ order: -1; }
   }
 
   .empty-state{
@@ -462,13 +405,8 @@
         <span>Catalogus · lopend</span>
         <span>Leesobsessie</span>
       </div>
-      <div class="card-heading">
-        <div>
-          <h2>Aan het einde van de oorlog</h2>
-          <p class="by">Bert Natter</p>
-        </div>
-        <div class="card-cover" id="hero-cover" data-title="Aan het einde van de oorlog" data-author="Bert Natter" data-initial="A"></div>
-      </div>
+      <h2>Aan het einde van de oorlog</h2>
+      <p class="by">Bert Natter</p>
       <dl class="card-fields">
         <div>
           <dt>Bespreking op</dt>
@@ -609,13 +547,6 @@
     const row = document.createElement('div');
     row.className = 'book-row';
 
-    const cover = document.createElement('div');
-    cover.className = 'book-cover';
-    cover.dataset.title = b.title;
-    cover.dataset.author = b.author;
-    cover.dataset.initial = b.title.charAt(0).toUpperCase();
-    coverObserver.observe(cover);
-
     const date = document.createElement('span');
     date.className = 'book-date';
     date.textContent = b.year ? b.year : '—';
@@ -628,95 +559,11 @@
     author.className = 'book-author';
     author.textContent = b.author;
 
-    row.appendChild(cover);
     row.appendChild(date);
     row.appendChild(title);
     row.appendChild(author);
     return row;
   }
-
-  /* ---------- Cover art (Open Library + Google Books fallback) ---------- */
-  const coverCache = {};
-
-  function coverKey(title, author){ return title + '§§§' + author; }
-
-  function applyCover(el, url){
-    if (url){
-      const img = document.createElement('img');
-      img.src = url;
-      img.alt = '';
-      img.loading = 'lazy';
-      img.onerror = () => {
-        el.classList.add('cover-empty');
-        el.replaceChildren(document.createTextNode(el.dataset.initial || ''));
-      };
-      el.replaceChildren(img);
-    } else {
-      el.classList.add('cover-empty');
-      el.textContent = el.dataset.initial || '';
-    }
-  }
-
-  async function tryOpenLibrary(query){
-    try {
-      const res = await fetch(`https://openlibrary.org/search.json?q=${encodeURIComponent(query)}&fields=cover_i&limit=5`);
-      if (!res.ok) return null;
-      const data = await res.json();
-      const hit = (data.docs || []).find(d => d.cover_i);
-      return hit ? `https://covers.openlibrary.org/b/id/${hit.cover_i}-M.jpg` : null;
-    } catch (e){
-      return null;
-    }
-  }
-
-  async function tryGoogleBooks(query){
-    try {
-      const res = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(query)}&maxResults=5`);
-      if (!res.ok) return null;
-      const data = await res.json();
-      const items = data.items || [];
-      for (const item of items){
-        const links = item.volumeInfo && item.volumeInfo.imageLinks;
-        const raw = links && (links.thumbnail || links.smallThumbnail);
-        if (raw) return raw.replace('http://', 'https://');
-      }
-      return null;
-    } catch (e){
-      return null;
-    }
-  }
-
-  async function loadCover(el){
-    const title = el.dataset.title;
-    const author = el.dataset.author;
-    const key = coverKey(title, author);
-
-    if (coverCache[key] !== undefined){
-      applyCover(el, coverCache[key]);
-      return;
-    }
-
-    const authorReadable = author.includes(',')
-      ? author.split(',').slice(1).join(' ').trim() + ' ' + author.split(',')[0].trim()
-      : author;
-
-    let url = await tryOpenLibrary(title + ' ' + authorReadable);
-    if (!url) url = await tryOpenLibrary(title);
-    if (!url) url = await tryGoogleBooks(`intitle:${title} inauthor:${authorReadable}`);
-    if (!url) url = await tryGoogleBooks(`intitle:${title}`);
-
-    coverCache[key] = url;
-    applyCover(el, url);
-  }
-
-  const coverObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting){
-        coverObserver.unobserve(entry.target);
-        loadCover(entry.target);
-      }
-    });
-  }, { rootMargin: '200px' });
 
   searchEl.addEventListener('input', render);
   sortBtns.forEach(btn => {
@@ -728,9 +575,6 @@
   });
 
   render();
-
-  // Cover for the "currently reading" hero card
-  loadCover(document.getElementById('hero-cover'));
 </script>
 
 </body>
