@@ -635,7 +635,7 @@
     return row;
   }
 
-  /* ---------- Cover art (Open Library) ---------- */
+  /* ---------- Cover art (Open Library + Google Books fallback) ---------- */
   const coverCache = {};
 
   function coverKey(title, author){ return title + '§§§' + author; }
@@ -657,7 +657,36 @@
     }
   }
 
-  function loadCover(el){
+  async function tryOpenLibrary(query){
+    try {
+      const res = await fetch(`https://openlibrary.org/search.json?q=${encodeURIComponent(query)}&fields=cover_i&limit=5`);
+      if (!res.ok) return null;
+      const data = await res.json();
+      const hit = (data.docs || []).find(d => d.cover_i);
+      return hit ? `https://covers.openlibrary.org/b/id/${hit.cover_i}-M.jpg` : null;
+    } catch (e){
+      return null;
+    }
+  }
+
+  async function tryGoogleBooks(query){
+    try {
+      const res = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(query)}&maxResults=5`);
+      if (!res.ok) return null;
+      const data = await res.json();
+      const items = data.items || [];
+      for (const item of items){
+        const links = item.volumeInfo && item.volumeInfo.imageLinks;
+        const raw = links && (links.thumbnail || links.smallThumbnail);
+        if (raw) return raw.replace('http://', 'https://');
+      }
+      return null;
+    } catch (e){
+      return null;
+    }
+  }
+
+  async function loadCover(el){
     const title = el.dataset.title;
     const author = el.dataset.author;
     const key = coverKey(title, author);
@@ -670,23 +699,14 @@
     const authorReadable = author.includes(',')
       ? author.split(',').slice(1).join(' ').trim() + ' ' + author.split(',')[0].trim()
       : author;
-    const query = encodeURIComponent(title + ' ' + authorReadable);
 
-    fetch(`https://openlibrary.org/search.json?q=${query}&fields=cover_i&limit=5`)
-      .then(res => res.ok ? res.json() : null)
-      .then(data => {
-        let url = null;
-        if (data && Array.isArray(data.docs)){
-          const hit = data.docs.find(d => d.cover_i);
-          if (hit) url = `https://covers.openlibrary.org/b/id/${hit.cover_i}-M.jpg`;
-        }
-        coverCache[key] = url;
-        applyCover(el, url);
-      })
-      .catch(() => {
-        coverCache[key] = null;
-        applyCover(el, null);
-      });
+    let url = await tryOpenLibrary(title + ' ' + authorReadable);
+    if (!url) url = await tryOpenLibrary(title);
+    if (!url) url = await tryGoogleBooks(`intitle:${title} inauthor:${authorReadable}`);
+    if (!url) url = await tryGoogleBooks(`intitle:${title}`);
+
+    coverCache[key] = url;
+    applyCover(el, url);
   }
 
   const coverObserver = new IntersectionObserver((entries) => {
