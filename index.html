@@ -220,6 +220,7 @@
     font-weight: 600;
   }
   .chip-date{ background: var(--pink-soft); color: var(--pink-deep); }
+  .chip-countdown{ background: var(--blue-soft); color: #2C5FC7; }
   .chip-location{ background: var(--teal-soft); color: var(--teal-deep); }
   .chip-host{ background: var(--purple-soft); color: var(--purple-deep); }
   .chip-status{ background: var(--yellow-soft); color: var(--yellow-deep); }
@@ -427,6 +428,10 @@
           <span class="chip-label">📅 Bespreking op</span>
           <span class="chip-value">woensdag 23 september</span>
         </li>
+        <li class="chip-countdown" id="countdown-chip" data-meeting="2026-09-23">
+          <span class="chip-label">⏳ Aftellen</span>
+          <span class="chip-value" id="countdown-value">…</span>
+        </li>
         <li class="chip-location">
           <span class="chip-label">📍 Locatie</span>
           <span class="chip-value">Bij Barbara</span>
@@ -586,6 +591,30 @@
   });
 
   render();
+
+  /* ---------- Countdown to the meeting date ---------- */
+  (function(){
+    const chip = document.getElementById('countdown-chip');
+    const valueEl = document.getElementById('countdown-value');
+    if (!chip || !valueEl) return;
+
+    const meeting = new Date(chip.dataset.meeting + 'T00:00:00');
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const msPerDay = 24 * 60 * 60 * 1000;
+    const daysLeft = Math.round((meeting - today) / msPerDay);
+
+    if (daysLeft > 1){
+      valueEl.textContent = `Nog ${daysLeft} dagen`;
+    } else if (daysLeft === 1){
+      valueEl.textContent = 'Morgen!';
+    } else if (daysLeft === 0){
+      valueEl.textContent = 'Vandaag!';
+    } else {
+      valueEl.textContent = `${Math.abs(daysLeft)} dagen geleden`;
+    }
+  })();
 </script>
 
 </body>
