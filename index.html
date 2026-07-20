@@ -108,6 +108,67 @@
     background: var(--pink-soft);
   }
 
+  /* ---------- Fun banner (flying butterfly) ---------- */
+  .fun-banner{
+    position: relative;
+    height: 64px;
+    overflow: hidden;
+    background: linear-gradient(100deg, var(--purple-soft), var(--pink-soft));
+  }
+  .banner-track{
+    position: absolute;
+    top: 50%;
+    left: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    white-space: nowrap;
+    transform: translate(-100%, -50%);
+    animation: flyAcross 18s linear infinite;
+  }
+  @keyframes flyAcross{
+    0%{ transform: translate(-100%, -50%); }
+    45%{ transform: translate(50vw, -65%); }
+    55%{ transform: translate(50vw, -35%); }
+    100%{ transform: translate(calc(100vw + 100%), -50%); }
+  }
+  .banner-butterfly{
+    display: inline-block;
+    font-size: 1.7rem;
+    transform-origin: 50% 60%;
+    animation: flutter 0.55s ease-in-out infinite;
+  }
+  @keyframes flutter{
+    0%, 100%{ transform: rotate(-10deg) translateY(0) scaleX(1); }
+    50%{ transform: rotate(-10deg) translateY(-6px) scaleX(0.82); }
+  }
+  .banner-string{
+    display: inline-block;
+    flex-shrink: 0;
+    margin: 0 -2px;
+  }
+  .banner-string path{
+    animation: stringSway 0.55s ease-in-out infinite;
+  }
+  @keyframes stringSway{
+    0%, 100%{ d: path("M0,3 Q18,19 36,3"); }
+    50%{ d: path("M0,3 Q18,10 36,3"); }
+  }
+  .banner-ribbon{
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    background: linear-gradient(100deg, var(--pink), var(--purple));
+    color: #fff;
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 600;
+    font-size: 0.9rem;
+    padding: 10px 20px 10px 26px;
+    border-radius: 0 999px 999px 0;
+    box-shadow: 0 6px 16px rgba(124,111,240,0.35);
+    clip-path: polygon(14px 0%, 100% 0%, 100% 100%, 14px 100%, 0% 50%);
+  }
+
   /* ---------- Hero ---------- */
   section.hero{
     padding: 32px 0 40px;
@@ -436,6 +497,16 @@
     </nav>
   </div>
 </header>
+
+<div class="fun-banner" aria-hidden="false">
+  <div class="banner-track">
+    <div class="banner-ribbon">11 augustus lunch literair bij Frank B vanaf 12.30 uur</div>
+    <svg class="banner-string" width="36" height="20" viewBox="0 0 36 20" aria-hidden="true">
+      <path d="M0,3 Q18,19 36,3" stroke="#5b5470" stroke-width="2" fill="none" stroke-linecap="round"/>
+    </svg>
+    <span class="banner-butterfly">🦋</span>
+  </div>
+</div>
 
 <section class="hero" id="nu">
   <div class="wrap">
