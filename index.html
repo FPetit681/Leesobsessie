@@ -40,9 +40,29 @@
     margin:0;
     background: var(--bg);
     color: var(--text);
-    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
     font-size: 17px;
     line-height: 1.6;
+    position: relative;
+    overflow-x: hidden;
+  }
+  body::before{
+    content: "";
+    position: fixed;
+    inset: -20%;
+    z-index: -1;
+    background:
+      radial-gradient(45% 40% at 12% 8%, rgba(255,93,143,0.22), transparent 70%),
+      radial-gradient(40% 38% at 88% 12%, rgba(124,111,240,0.22), transparent 70%),
+      radial-gradient(45% 45% at 85% 85%, rgba(0,191,166,0.18), transparent 70%),
+      radial-gradient(35% 35% at 10% 90%, rgba(255,193,69,0.16), transparent 70%);
+    filter: blur(10px);
+    animation: aurora 22s ease-in-out infinite alternate;
+  }
+  @keyframes aurora{
+    0%{ transform: translate(0,0) scale(1); }
+    50%{ transform: translate(2.5%,-2%) scale(1.06) rotate(1.5deg); }
+    100%{ transform: translate(-2%,2%) scale(1.02) rotate(-1deg); }
   }
 
   @media (prefers-reduced-motion: reduce){
@@ -62,6 +82,16 @@
   header.site{
     padding: 48px 0 24px;
   }
+  header.site{
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    padding: 18px 0;
+    background: rgba(250,250,252,0.72);
+    backdrop-filter: blur(14px) saturate(1.4);
+    -webkit-backdrop-filter: blur(14px) saturate(1.4);
+    border-bottom: 1px solid var(--border);
+  }
   header.site .wrap{
     display:flex;
     justify-content: space-between;
@@ -70,12 +100,15 @@
     gap: 16px;
   }
   .brand h1{
-    font-family: 'Fredoka', sans-serif;
+    font-family: 'Fredoka', system-ui, sans-serif;
     font-weight: 700;
     font-size: clamp(2rem, 5vw, 2.7rem);
     margin: 0;
     letter-spacing: -0.01em;
-    color: var(--text);
+    background: linear-gradient(95deg, var(--pink), var(--purple) 55%, var(--blue));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
   }
   .brand p{
     display: inline-block;
@@ -111,29 +144,46 @@
   /* ---------- Hero ---------- */
   section.hero{
     padding: 32px 0 40px;
+    scroll-margin-top: 90px;
   }
+  section#archief{ scroll-margin-top: 90px; }
   .hero-label{
     display: inline-block;
-    font-family: 'Fredoka', sans-serif;
+    font-family: 'Fredoka', system-ui, sans-serif;
     font-weight: 600;
     font-size: 0.8rem;
     color: #fff;
     background: linear-gradient(100deg, var(--pink), var(--purple));
-    padding: 7px 16px;
+    background-size: 150% 150%;
+    animation: shimmer 5s ease infinite;
+    padding: 7px 18px;
     border-radius: 999px;
     margin: 0 0 18px;
+    box-shadow: 0 8px 20px rgba(224,49,107,0.35);
+  }
+  @keyframes shimmer{
+    0%,100%{ background-position: 0% 50%; }
+    50%{ background-position: 100% 50%; }
   }
 
   .card{
-    background: var(--surface);
+    background:
+      linear-gradient(var(--surface), var(--surface)) padding-box,
+      linear-gradient(130deg, var(--pink), var(--purple) 45%, var(--teal)) border-box;
+    border: 3px solid transparent;
     color: var(--text);
     border-radius: 28px;
     padding: 32px 32px 30px;
-    box-shadow: 0 20px 45px -20px rgba(124,111,240,0.35), 0 2px 10px rgba(36,31,61,0.06);
+    box-shadow: 0 25px 60px -20px rgba(124,111,240,0.45), 0 0 0 6px rgba(255,93,143,0.06);
     position: relative;
     transform: rotate(-0.8deg);
     opacity: 0;
     animation: cardIn 0.6s cubic-bezier(.2,.7,.3,1) 0.1s forwards;
+    transition: transform 0.25s cubic-bezier(.2,.7,.3,1), box-shadow 0.25s;
+  }
+  .card:hover{
+    transform: rotate(-0.4deg) translateY(-3px);
+    box-shadow: 0 34px 70px -20px rgba(124,111,240,0.55), 0 0 0 10px rgba(124,111,240,0.07);
   }
   @keyframes cardIn{
     from{ opacity: 0; transform: rotate(-2.5deg) translateY(14px) scale(0.98); }
@@ -207,6 +257,11 @@
     padding: 9px 16px;
     border-radius: 16px;
     font-size: 0.85rem;
+    transition: transform 0.18s cubic-bezier(.2,.7,.3,1), box-shadow 0.18s;
+  }
+  .card-chips li:hover{
+    transform: translateY(-2px) rotate(-0.6deg);
+    box-shadow: 0 8px 18px rgba(36,31,61,0.10);
   }
   .card-chips .chip-label{
     font-family: 'Fredoka', sans-serif;
@@ -243,7 +298,7 @@
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    background: var(--surface);
+    background: linear-gradient(100deg, var(--yellow-soft), var(--pink-soft));
     border: 1px solid var(--border);
     padding: 8px 16px;
     border-radius: 999px;
@@ -251,7 +306,9 @@
     font-weight: 600;
     color: var(--text);
     box-shadow: 0 4px 12px rgba(36,31,61,0.05);
+    transition: transform 0.18s;
   }
+  .upcoming-item:hover{ transform: translateY(-2px); }
 
   /* ---------- Intro ---------- */
   section.intro{
@@ -283,11 +340,15 @@
     margin-bottom: 6px;
   }
   .archive-head h3{
-    font-family: 'Fredoka', sans-serif;
+    font-family: 'Fredoka', system-ui, sans-serif;
     font-weight: 700;
     font-size: 1.7rem;
     margin: 0;
     color: var(--text);
+    background: linear-gradient(95deg, var(--purple-deep), var(--pink-deep));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
   }
   .archive-stats{
     font-family: 'Fredoka', sans-serif;
@@ -346,7 +407,9 @@
   .sort-btn:hover{ color: var(--text); }
   .sort-btn[aria-pressed="true"]{
     background: linear-gradient(100deg, var(--pink), var(--purple));
+    background-size: 140% 140%;
     color: #fff;
+    box-shadow: 0 6px 16px rgba(124,111,240,0.35);
   }
   .sort-btn:focus-visible{ outline: 2px solid var(--purple); outline-offset: 2px; }
 
@@ -378,6 +441,14 @@
     transition: background 0.15s;
   }
   .book-row:hover{ background: var(--grey-soft); }
+  .book-row:hover .book-title{
+    background: linear-gradient(95deg, var(--pink-deep), var(--purple-deep));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .book-row{ border: 1px solid transparent; }
+  .book-row:hover{ border-color: var(--border); box-shadow: 0 6px 16px rgba(36,31,61,0.07); }
   .book-date{
     font-family: 'Fredoka', sans-serif;
     font-weight: 600;
