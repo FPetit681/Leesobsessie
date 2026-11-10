@@ -682,10 +682,13 @@
       });
 
       order.forEach(key => {
-        const label = document.createElement('div');
-        label.className = 'decade-label decade-' + key;
-        label.textContent = key === 'onbekend' ? 'Datum onbekend' : key;
-        listEl.appendChild(label);
+        // Decennium-labels weggelaten (het jaartal staat al bij elk boek); alleen "Datum onbekend" blijft
+        if (key === 'onbekend'){
+          const label = document.createElement('div');
+          label.className = 'decade-label decade-' + key;
+          label.textContent = 'Datum onbekend';
+          listEl.appendChild(label);
+        }
 
         const frag = document.createDocumentFragment();
         groups[key].forEach(b => frag.appendChild(bookRow(b)));
