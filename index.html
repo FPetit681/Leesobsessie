@@ -455,6 +455,8 @@
     font-size: 0.8rem;
     color: var(--purple-deep);
   }
+  .book-date-dm, .book-date-y{ display: block; line-height: 1.25; }
+  .book-date-y{ font-weight: 500; opacity: 0.7; }
   .book-title-wrap{
     display: flex;
     flex-direction: column;
@@ -486,6 +488,8 @@
     .book-row{ grid-template-columns: 1fr; gap: 2px; padding: 12px 10px; }
     .book-author{ text-align: left; }
     .book-date{ order: -1; }
+    .book-date-dm, .book-date-y{ display: inline; }
+    .book-date-dm::after{ content: ' '; }
   }
 
   .empty-state{
@@ -720,13 +724,29 @@
     }
   }
 
+  const MAANDEN = ['jan','feb','mrt','apr','mei','jun','jul','aug','sep','okt','nov','dec'];
+  const MAANDEN_VOL = ['januari','februari','maart','april','mei','juni','juli','augustus','september','oktober','november','december'];
+
   function bookRow(b){
     const row = document.createElement('div');
     row.className = 'book-row';
 
     const date = document.createElement('span');
     date.className = 'book-date';
-    date.textContent = b.year ? b.year : '—';
+    if (b.date_iso){
+      const [y, m, d] = b.date_iso.split('-').map(Number);
+      const dm = document.createElement('span');
+      dm.className = 'book-date-dm';
+      dm.textContent = d + ' ' + MAANDEN[m - 1];
+      const yr = document.createElement('span');
+      yr.className = 'book-date-y';
+      yr.textContent = y;
+      date.appendChild(dm);
+      date.appendChild(yr);
+      date.title = d + ' ' + MAANDEN_VOL[m - 1] + ' ' + y;
+    } else {
+      date.textContent = b.year ? b.year : '—';
+    }
 
     const titleWrap = document.createElement('div');
     titleWrap.className = 'book-title-wrap';
